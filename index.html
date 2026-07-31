@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>노인 무임승차와 지하철 적자 실증 분석</title>
+<meta name="description" content="서울 지하철 공개 데이터로 검증한 노인 무임승차와 적자 구조, 그리고 노인 통행 목적에 대한 데이터분석 프로젝트">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚇</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">🚇 무임승차 실증 분석<span class="dot">.</span></div>
+    <div class="nav-links">
+      <a href="#overview">개요</a>
+      <a href="#data">데이터·방법</a>
+      <a href="#basic">기초 현황</a>
+      <a href="#h1">가설 1 · 적자 구조</a>
+      <a href="#h2">가설 2 · 통행 목적</a>
+      <a href="#map">자치구 지도</a>
+      <a href="#conclusion">결론·제언</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">데이터분석언어 · 개인 프로젝트</div>
+    <h1>노인 무임승차는 정말<br>지하철 적자의 <em>'주범'</em>인가</h1>
+    <p class="lede">
+      서울 지하철 승하차·재무·인구 공개 데이터 약 70만 건을 교차 분석해
+      "무임승차가 적자의 주범"이라는 사회적 통념을 실증적으로 검증하고,
+      무임승차 노인들의 실제 통행 목적이 <b>여가</b>인지 <b>생계형 근로</b>인지 데이터로 추적한 프로젝트입니다.
+    </p>
+    <div class="hero-meta">분석 기간 2019–2024 (핵심 구간 2021–2024) · 서울교통공사 1–8호선 260개 역 · 서울시 25개 자치구</div>
+
+    <div class="tiles">
+      <div class="tile">
+        <div class="t-label">노인 무임승차 추정 손실액 (2024)</div>
+        <div class="t-value">3,492<span class="unit">억 원</span></div>
+        <div class="t-note">자체 OD 요금 추정 모델 산출</div>
+      </div>
+      <div class="tile bad">
+        <div class="t-label">서울교통공사 당기순손실 (2024)</div>
+        <div class="t-value">−7,241<span class="unit">억 원</span></div>
+        <div class="t-note">노인 무임손실 기여도 48.2%</div>
+      </div>
+      <div class="tile">
+        <div class="t-label">무임 완전 폐지 시 흑자 전환</div>
+        <div class="t-value" style="color:var(--danger)">불가</div>
+        <div class="t-note">2021–2024 전 기간, 시나리오 D(100% 회수) 기준</div>
+      </div>
+      <div class="tile">
+        <div class="t-label">새벽(~06시) 노인 승차 비중</div>
+        <div class="t-value">30.4<span class="unit">%</span></div>
+        <div class="t-note">평일 기준 하루 중 최고 — 전일 평균의 2.2배</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ================= 1. 개요 ================= -->
+<section id="overview">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">01 — 분석 개요</div>
+      <h2>수치는 있지만, 검증은 없었다</h2>
+      <p class="sub">무임손실 규모는 매년 발표되지만 그것이 적자 구조에서 차지하는 실질적 비중,
+        그리고 무임승차 노인의 실제 통행 목적에 대한 데이터 기반 분석은 부족했습니다.</p>
+    </div>
+
+    <p class="prose">
+      서울교통공사가 공식 발표한 무임수송 손실액은 <b>2020년 2,643억 원에서 2025년 4,488억 원으로 5년간 약 70% 증가</b>했습니다.
+      무임승차 대상은 노인(경로)·장애인·국가유공자이며, 이 중 <b>노인 승차 인원이 전체 우대권의 약 83%</b>를 차지합니다.
+      지난해 전국 6개 도시철도 운영기관의 당기순손실 1조 4,875억 원 중 무임손실이 7,754억 원(52.1%)이었고,
+      그중 서울교통공사의 무임손실이 4,488억 원으로 전체의 58%에 달해 6개 기관 중 가장 컸습니다.
+    </p>
+    <p class="prose">
+      이러한 상황에서 무임승차 연령 상향, 소득 차등 요금제 등 <b>혜택 축소 방향의 대안</b>이 주로 논의되어 왔습니다.
+      그러나 지하철은 공공재이며 무임승차는 복지 제도입니다. 재무제표상 적자를 줄이기 위해 복지 혜택을 일괄 축소하는 것이
+      올바른 해결책인지 재검토가 필요합니다. 특히 무임손실은 실제 현금 지출이 아닌 <b>기회비용</b>이므로,
+      인건비·유지보수비 같은 구조적 고정비와 구분해 살펴봐야 합니다.
+    </p>
+
+    <div class="grid-2">
+      <div class="card qcard">
+        <div class="q-no">QUESTION 1</div>
+        <h3>노인 무임승차는 실제로 지하철 적자의 유일한 주범인가?</h3>
+        <p>공개된 재무·교통 데이터를 교차 분석하여 무임손실과 구조적 고정비의 실제 적자 기여도를 검증합니다.</p>
+      </div>
+      <div class="card qcard">
+        <div class="q-no">QUESTION 2</div>
+        <h3>무임승차 노인의 주된 통행 목적은 근로인가, 여가인가?</h3>
+        <p>시간대·지역·인구 특성 데이터로 생계형 통행과 여가형 통행을 구분하고 정량적으로 검증합니다.
+          통행 목적에 따라 정책의 방향이 달라지기 때문입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. 데이터 & 방법 ================= -->
+<section id="data">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">02 — 분석 대상 데이터 & 방법</div>
+      <h2>공개 데이터 8종의 교차 분석</h2>
+      <p class="sub">교통 · 재무 · 인구 · 산업 데이터를 자치구와 역 단위로 결합했습니다.</p>
+    </div>
+
+    <div class="tbl-scroll">
+      <table class="data">
+        <thead><tr><th>구분</th><th>데이터명</th><th>출처</th><th>활용 목적</th></tr></thead>
+        <tbody>
+          <tr><td>필수</td><td>역별 일별 시간대별 노인 승하차인원</td><td>공공데이터포털</td><td>시간대·역별 노인 승하차 패턴 분석</td></tr>
+          <tr><td>필수</td><td>역별 일별 시간대별 전체 승하차인원</td><td>공공데이터포털</td><td>전체 고객 승하차 패턴 분석</td></tr>
+          <tr><td>필수</td><td>역별 월별 권종별 승차인원</td><td>공공데이터포털</td><td>무임승차(우대권) 규모 파악·무임손실 추정</td></tr>
+          <tr><td>필수</td><td>서울교통공사 연간 재무상태표</td><td>서울교통공사</td><td>수입·지출 구조와 적자 규모 확인</td></tr>
+          <tr><td>보조</td><td>지역별 기초연금 수급 비율</td><td>공공데이터포털</td><td>저소득 고령층 분포와 이용 패턴 연계</td></tr>
+          <tr><td>보조</td><td>서울시 고령자현황 통계</td><td>KOSIS</td><td>고령 인구 비율·시계열 추이</td></tr>
+          <tr><td>보조</td><td>서울시 사업체현황 (산업대분류/동별)</td><td>서울열린데이터광장</td><td>역세권 사업체 유형으로 근로 통행 추정</td></tr>
+          <tr><td>보조</td><td>지역별 근로소득·등록인구</td><td>KOSIS</td><td>소득 수준과 이용 패턴 교차 분석</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-cap">분석 단위 — 인원: 역별 × 일별 × 시간대별(1시간) 승하차 / 인구: 자치구(25개구) × 성별 × 연령대(5세)
+      · 노인 승하차 데이터는 2021년 7월부터 제공되어 노인 비중 분석은 2021년 하반기–2024년 기준</p>
+
+    <div class="chips">
+      <span class="chip"><b>Python</b> 3.10+</span>
+      <span class="chip">pandas · numpy</span>
+      <span class="chip">matplotlib · seaborn · plotly</span>
+      <span class="chip">scipy · statsmodels</span>
+      <span class="chip">geopandas · folium</span>
+      <span class="chip">NetworkX (다익스트라)</span>
+      <span class="chip">Jupyter / Colab · GitHub</span>
+    </div>
+
+    <div class="card">
+      <h3>전처리 — 2021년 상반기 보정 추정</h3>
+      <div class="card-sub">노인 데이터가 2021년 7월부터 제공되므로, 4개년 완전 연도 추세를 만들기 위해 상반기를 역산했습니다.</div>
+      <div class="steps s4">
+        <div class="step"><h4>비중 산출</h4><p>2022–2024 실측을 결합해 [요일유형 × 시간대 × 역 × 승하차]별 노인 비중 산출</p></div>
+        <div class="step"><h4>보정계수</h4><p>동일 역·시간대의 상·하반기 비중 편차로 반기 × 주중구분 × 시간대별 보정계수 산출</p></div>
+        <div class="step"><h4>비중 역산</h4><p>2021 하반기 실측 비중에 보정계수를 곱해 상반기 추정 노인 비중 산출</p></div>
+        <div class="step"><h4>인원 추정</h4><p>추정 비중 × 상반기 전체 승하차 실측값으로 최종 노인 승하차 추정 (이중 보정)</p></div>
+      </div>
+      <div class="callout" style="margin-top:16px">
+        보정 과정에서 <strong>06시 이전 새벽 시간대의 보정계수가 평일 1.25, 주말 1.38</strong>로 유독 높게 나타났습니다.
+        일반 승객이 줄어드는 상반기(동절기 포함)에도 <strong>생계형 고령 노동자의 새벽 이동은 굳건히 유지된다</strong>는 점을
+        정량적으로 보여주는 첫 단서였습니다. 나머지 시간대의 보정계수는 0.95–1.02로 매우 안정적이었습니다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. 기초 현황 ================= -->
+<section id="basic">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">03 — 기초 현황</div>
+      <h2>고령화는 이미 지하철 안에 있다</h2>
+      <p class="sub">연도·시간대·권종·인구 네 갈래로 기준선을 세웠습니다.</p>
+    </div>
+
+    <div class="card fig" id="figYearly">
+      <div class="fig-head">
+        <div><div class="fig-title">연도별 노인 승차 인원과 비중 (2021–2024)</div>
+        <div class="fig-sub">단위: 억 명 · 2021년은 보정 추정 포함</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="chart-box" id="chYearlyBars"></div>
+        <div class="chart-box" id="chYearlyShare"></div>
+      </div>
+      <div class="legend" id="lgYearly"></div>
+      <div class="fig-note">노인 승차 비중은 13.53% → 14.57%로 꾸준히 상승. 같은 기간 서울 65세 이상 인구가 160만 → 182만 명으로 늘어난 점을
+        고려하면, 이는 일시적 회복이 아닌 <b>구조적 고령화 수요의 심화</b>입니다.</div>
+    </div>
+
+    <div class="card fig" id="figHourly">
+      <div class="fig-head">
+        <div><div class="fig-title">시간대별 노인 승차 비중 — 평일 vs 주말</div>
+        <div class="fig-sub">2021–2024 일평균 승차 기준 · 단위: %</div></div>
+      </div>
+      <div class="chart-box" id="chHourly"></div>
+      <div class="legend" id="lgHourly"></div>
+      <div class="fig-note">새벽(~06시) 노인 비중은 <b>평일 30.4%로 전 시간대 최고</b>. 출근 피크(07–09시)에는 7%대로 급락하지만
+        이는 일반 출근객이라는 분모가 커지는 <b>희석 효과</b>이며, 낮 시간대(10–16시)에는 26.3%로 다시 상승해
+        이용객 4명 중 1명이 노인이 됩니다.</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card fig" id="figTicket">
+        <div class="fig-head">
+          <div><div class="fig-title">권종별 무임 우대권 구성 (2019–2023)</div>
+          <div class="fig-sub">단위: % · 2024년 데이터 미제공</div></div>
+        </div>
+        <div class="chart-box" id="chTicket"></div>
+        <div class="legend" id="lgTicket"></div>
+        <div class="fig-note">우대권 이용의 <b>82–85%가 경로(노인)</b>이며 비중은 매년 상승 — 무임손실 논의에서 노인 무임이
+          핵심 변수일 수밖에 없는 이유입니다.</div>
+      </div>
+      <div class="card fig" id="figPop">
+        <div class="fig-head">
+          <div><div class="fig-title">서울시 고령 인구 · 고령 근로자 추이</div>
+          <div class="fig-sub">65세 이상 인구(만 명) · 55세 이상 근로자 비중(%)</div></div>
+        </div>
+        <div class="grid-2" style="gap:8px">
+          <div class="chart-box" id="chPop"></div>
+          <div class="chart-box" id="chWorker"></div>
+        </div>
+        <div class="fig-note">65세 이상 인구는 5년간 <b>+22.9%</b>, 55세 이상 근로자 비중은 15.4% → <b>20.1%</b>.
+          고령 취업 증가는 생계형 이동 수요가 실질적으로 늘고 있음을 시사합니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. 가설 1 ================= -->
+<section id="h1">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">04 — 가설 1 · 무임승차와 적자 구조</div>
+      <h2>무임승차를 완전히 폐지해도,<br>흑자는 오지 않는다</h2>
+      <p class="sub">699,611건의 승하차 원시 데이터와 네트워크 최단거리 연산으로 노인 무임 손실액을 독자적으로 추정하고,
+        시나리오별 적자 시뮬레이션으로 통념을 검증했습니다.</p>
+    </div>
+
+    <p class="prose">
+      출자 동의안의 무임승차 손실은 전체 법정 무임 대상자를 합산한 수치로, 집단별 손실이 분리되어 있지 않습니다.
+      그래서 <b>노인(경로우대) 승하차 원시 데이터(2021.7–2024.12, 1–8호선 260개 역)</b>에 연도별 기본운임과
+      거리비례 추가운임을 결합해 노인 무임 손실액을 직접 추정했습니다.
+      무임손실은 현금 지출이 아닌 기회비용이므로, 추정액은 적자에 단순 합산하지 않고 <b>실제 적자 구조와 병렬 비교</b>했습니다.
+    </p>
+
+    <div class="steps">
+      <div class="step"><h4>역 위치 산출</h4><p>노선 총연장을 균등 배분해 역별 위치(km) 산출 — 예: 2호선 60.2km ÷ 50개 역</p></div>
+      <div class="step"><h4>환승역 탐지</h4><p>역명 일치·수동 검증으로 37개 환승역 수집, 노선 간 연결 반영</p></div>
+      <div class="step"><h4>네트워크 구성</h4><p>NetworkX + 다익스트라로 모든 역 쌍 간 최단거리 매트릭스 전수 연산</p></div>
+      <div class="step"><h4>기대 추가운임</h4><p>역별 하차 인원 비중을 확률 가중치로 적용해 승차역별 기대 추가운임 산출</p></div>
+      <div class="step"><h4>시점별 운임 적용</h4><p>기본운임 1,250원 → 1,400원(2023.10.7~) 인상을 일자별로 동적 매칭</p></div>
+      <div class="step"><h4>연간 손실 합산</h4><p>(기본운임+기대 추가운임) × 일별 승차 인원을 전체 역·일자 누적 합산</p></div>
+    </div>
+
+    <div class="callout">
+      개별 승객의 출발–도착 경로가 없는 원시 데이터의 한계를 극복하기 위해, 역별 실측 하차 총량 분포를 가중치로 쓰는
+      <strong>독립 가정 기반 목적지 추정(OD) 모델</strong>을 구축했습니다.
+      <div class="formula">P(하차역 = d | 승차역 = s) ≈ 하차인원(d) / 전체 하차인원</div>
+    </div>
+
+    <div class="card fig" id="figLoss">
+      <div class="fig-head">
+        <div><div class="fig-title">노인 무임 추정 손실액 vs 당기순손실</div>
+        <div class="fig-sub">단위: 억 원 · 막대 위 %는 적자 기여도(A/B)</div></div>
+      </div>
+      <div class="chart-box" id="chLoss"></div>
+      <div class="legend" id="lgLoss"></div>
+      <div class="fig-note">추정 손실액은 2021년 2,378억 → 2024년 3,492억 원으로 매년 상승했고 적자 기여도는 24.7%–59.3%를 오갑니다.
+        그러나 적자가 가장 컸던 2021년(−9,644억)에 기여도가 오히려 가장 낮았다는 <b>비동조화</b>는,
+        적자의 기저에 무임손실 외의 <b>거대한 고정비·운영 외 요인</b>이 존재함을 시사합니다.</div>
+    </div>
+
+    <div class="tbl-scroll">
+      <table class="data">
+        <thead><tr><th>구분</th><th class="num">2021</th><th class="num">2022</th><th class="num">2023</th><th class="num">2024</th></tr></thead>
+        <tbody>
+          <tr><td>노인 연간 승차인원 (만 명)</td><td class="num">17,613*</td><td class="num">19,664</td><td class="num">22,203</td><td class="num">23,262</td></tr>
+          <tr><td>적용 평균 기본운임 (원)</td><td class="num">1,250</td><td class="num">1,250</td><td class="num">1,287</td><td class="num">1,400</td></tr>
+          <tr><td>OD 모델 추정 평균 추가운임 (원)</td><td class="num">+100.3</td><td class="num">+93.8</td><td class="num">+95.3</td><td class="num">+96.9</td></tr>
+          <tr><td>노인 1인당 평균 총요금 (원)</td><td class="num">1,350</td><td class="num">1,344</td><td class="num">1,382</td><td class="num">1,497</td></tr>
+          <tr><td>노인 무임 추정 손실액 A (억 원)</td><td class="num">−2,378</td><td class="num">−2,643</td><td class="num">−3,068</td><td class="num">−3,492</td></tr>
+          <tr><td>공식 당기순손실 B (억 원)</td><td class="num">−9,644</td><td class="num">−6,420</td><td class="num">−5,173</td><td class="num">−7,241</td></tr>
+          <tr><td>적자 기여도 (A/B)</td><td class="num">24.7%</td><td class="num">41.2%</td><td class="num">59.3%</td><td class="num">48.2%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-cap">* 2021년은 하반기 실측치 기준 연간 2배수 추정 적용</p>
+
+    <div class="card fig" id="figScenario">
+      <div class="fig-head">
+        <div><div class="fig-title">시나리오 시뮬레이터 — 무임손실을 줄이면 적자는 얼마나 줄어들까?</div>
+        <div class="fig-sub">조정 당기순손실 = 당기순손실 + (노인 무임손실 × 감소율) · 감소분이 100% 수익으로 직결된다고 가정</div></div>
+      </div>
+      <div class="scenario-bar">
+        <div class="seg" id="scnSeg" role="tablist" aria-label="시나리오 선택">
+          <button data-r="0" class="on">현행 유지 0%</button>
+          <button data-r="30">A · 30% 감소</button>
+          <button data-r="50">B · 50% 감소</button>
+          <button data-r="70">C · 70% 감소</button>
+          <button data-r="100">D · 완전 폐지 100%</button>
+        </div>
+        <span class="verdict" id="scnVerdict">흑자 전환 — 불가</span>
+      </div>
+      <div class="chart-box" id="chScenario"></div>
+      <div class="scenario-desc" id="scnDesc"></div>
+      <div class="fig-note">시나리오 D(완전 폐지)는 사회적 합의 없이 실현 불가능한 <b>이론적 상한선</b>입니다.
+        그럼에도 2021–2024 전 기간 당기순손실은 단 한 번도 흑자로 전환되지 못했습니다.</div>
+    </div>
+
+    <div class="callout warn">
+      <strong>가설 1 결론 —</strong> "노인 무임승차가 적자의 유일한 주범"이라는 통념은 데이터 관점에서 타당성이 낮습니다.
+      무임손실 보전·요금 조정은 재정을 일부 개선할 수 있으나 만능열쇠가 아니며, 근본적 재정 자립을 위해서는
+      <strong>인건비·노후 시설 유지보수비·원가 이하 운임 구조 등 구조적 고정비의 혁신</strong>이 병행되어야 합니다.
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. 가설 2 ================= -->
+<section id="h2">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">05 — 가설 2 · 노인 통행 목적</div>
+      <h2>새벽의 지하철은<br>일터로 가는 노인들이 채운다</h2>
+      <p class="sub">하루를 4개 구간으로 나누고, 25개 자치구의 산업·인구 지표와 교차 분석해
+        생계형 통행과 여가형 통행을 분리했습니다.</p>
+    </div>
+
+    <div class="grid-4" id="zoneCards">
+      <div class="card zone hot">
+        <div class="z-tag">A구간 · ~06시</div>
+        <div class="z-big">30.4<span class="unit">%</span></div>
+        <p><b>생계형 증명 구간.</b> 일반 유입이 거의 없어 노인 비중이 가감 없이 드러남.
+          평일–주말 차이가 −2.2%p에 불과 — 요일과 무관한 <b>고정 노동 루틴</b>.</p>
+      </div>
+      <div class="card zone">
+        <div class="z-tag">B구간 · 06–09시</div>
+        <div class="z-big">8.4<span class="unit">%</span></div>
+        <p><b>희석 구간.</b> 비중 급락은 출근객 분모가 커진 결과. 절대 이용량(일 8.0만 명)은
+          A구간보다 많아, 근로 일정에 묶인 이동임을 시사.</p>
+      </div>
+      <div class="card zone">
+        <div class="z-tag">C구간 · 09–17시</div>
+        <div class="z-big">23.6<span class="unit">%</span></div>
+        <p><b>최대 이용 구간</b>(일평균 36만 명). 무임 제도의 실질 혜택이 가장 크게 작동하며,
+          일반 승객이 빠져나간 유휴 시간대의 공백을 효율적으로 활용.</p>
+      </div>
+      <div class="card zone">
+        <div class="z-tag">D구간 · 17시~</div>
+        <div class="z-big">7.1<span class="unit">%</span></div>
+        <p><b>귀가 중첩 구간.</b> 퇴근 러시로 비중은 최저지만, 이 역시 희석 효과.
+          A·B구간 출발 노동자와 C구간 활동 노인의 귀가 행렬이 겹침.</p>
+      </div>
+    </div>
+
+    <div class="card fig" id="figCorr">
+      <div class="fig-head">
+        <div><div class="fig-title">지역 특성 지표 × 구간별 노인 승하차 — 피어슨 상관계수</div>
+        <div class="fig-sub">n = 25개 자치구 · 2021–2024 통합 · *** p&lt;0.001, ** p&lt;0.01, * p&lt;0.05</div></div>
+      </div>
+      <div class="chart-box" id="chCorr"></div>
+      <div class="fig-note">핵심 결과 — <b>사업시설관리업(청소·경비) 종사자 수 ↔ 새벽 A구간 노인 하차량 r=0.745 (p&lt;0.001)</b>,
+        4년 내내 r≥0.71로 강건. 반면 기초연금 수급률 ↔ A구간 승차는 r=0.155로 유의하지 않았습니다.
+        새벽 노인 통행은 거주지 특성보다 <b>도착지의 노동 수요</b>에 반응하는 '목적지향적 노동 이동'입니다.
+        같은 변수의 상관이 C구간(낮)에서는 r=0.299로 붕괴되어, 낮 통행은 특정 지역 특성에 집중되지 않음도 확인됩니다.</div>
+    </div>
+
+    <div class="card">
+      <h3>C구간(09–17시) 노인 하차 TOP 25 — 네 가지 얼굴</h3>
+      <div class="card-sub">낮 시간대 목적지는 단일 특성으로 설명되지 않고, 성격이 다른 네 유형이 뒤섞여 있습니다.</div>
+      <div class="chips" style="margin-top:14px">
+        <span class="chip"><b>① 도심 여가·복지 집중형</b> — 제기동·종로3가·동묘앞 (노인 비중 최대 65%)</span>
+        <span class="chip"><b>② 외곽 생활권 거점형</b> — 연신내·창동·수유 (구청·복지관·시장)</span>
+        <span class="chip"><b>③ 환승 허브형</b> — 잠실·신도림·고속터미널·서울역 (희석 효과)</span>
+        <span class="chip"><b>④ 강남권 업무지구형</b> — 선릉·교대·역삼 (평일 비중 85–87%)</span>
+      </div>
+      <div class="tbl-scroll tbl-max" style="margin-top:14px">
+        <table class="data" id="topStations"></table>
+      </div>
+      <div class="fig-note">④유형의 평일 이용 비중 85–87%는 이 표에서 가장 높은 수치로, 여가가 지배하는 낮 시간대에도
+        <b>A·B구간 생계형 이동의 흔적이 강남권 업무지구까지 이어지고 있을 가능성</b>을 시사합니다.</div>
+    </div>
+
+    <div class="card">
+      <h3>생계형 복합판정지수 — 자치구 25곳의 등급화</h3>
+      <div class="card-sub">단일 지표로는 생계형 통행을 포괄할 수 없어, 통계적으로 유의한 지표를 가중 합산한 지수를 설계했습니다.</div>
+      <div class="callout" style="margin-top:14px">
+        <div class="formula">생계형 지수 = 하차지 지수 × 0.45 + 시간대 지수 × 0.40 + 요일 지수 × 0.15</div>
+        하차지(사업시설관리업 종사자 수, r=0.745)와 시간대(A+B구간 하차 비중, r=0.634)는 r값에 비례해 가중치를 배분하고,
+        통계적 직접 근거가 없는 요일 지표(평일 이용 비중)는 개념적 타당성만으로 보조 가중치 15%를 부여했습니다.
+        <strong>기초연금 수급률은 유의하지 않아(r=0.155, p=0.463) 지수에서 제외</strong>했습니다.
+        상위 ⅓은 A(생계형), 중위 ⅓은 B(혼재형), 하위 ⅓은 C(여가형)로 분류합니다.
+      </div>
+      <div class="fig">
+        <div class="chart-box" id="chIndex"></div>
+        <div class="legend" id="lgIndex"></div>
+      </div>
+      <div class="fig-note"><b>강남구(79.8, 1위)</b>는 사업시설관리업 종사자 서울 최다로 하차지 지수 만점 — OD 분류의 '목적지형'과 교차 검증됩니다.
+        <b>금천구(69.1)</b>는 종사자가 많지 않음에도 시간대·요일 지수 만점 — 가산·구로디지털단지의 새벽 물류·제조 노동으로 추정.
+        반면 <b>강북구(1.7, 최하위)</b>는 저소득 노인 밀집 지역임에도 생계형 특성이 전혀 없어,
+        "소득이 낮으면 생계형 이동을 한다"는 가정이 성립하지 않음을 보여줍니다.
+        본 지수는 자치구 단위 생태학적 분석으로, 개인의 통행 목적 단정에는 쓸 수 없습니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6. 지도 ================= -->
+<section id="map">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">06 — 자치구 지도 탐색</div>
+      <h2>출발지와 목적지는<br>서울 지도 위에서 분리되어 있다</h2>
+      <p class="sub">평일 09시 이전(A+B구간) 순승차량 기준 OD 유형 분류 — 외곽 베드타운(출발지형)에서
+        도심 업무지구(목적지형)로 향하는 새벽 이동의 구조가 드러납니다. 지표를 바꿔가며 살펴보세요.</p>
+    </div>
+
+    <div class="card">
+      <div class="seg" id="mapSeg" role="tablist" aria-label="지도 지표 선택">
+        <button data-m="od" class="on">OD 유형</button>
+        <button data-m="grade">생계형 등급</button>
+        <button data-m="index">생계형 지수</button>
+        <button data-m="dawnOff">새벽 노인 하차량</button>
+        <button data-m="facility">사업시설관리 종사자</button>
+        <button data-m="elderRatio">노인 승차 비율</button>
+      </div>
+      <div class="map-wrap">
+        <div class="chart-box" id="seoulMap"></div>
+        <aside class="map-side">
+          <h4 id="mapLegendTitle"></h4>
+          <div class="map-legend" id="mapLegend"></div>
+          <div class="map-info" id="mapInfo">
+            <div class="gu">자치구를 선택하세요</div>
+            <p style="font-size:12.5px;color:var(--muted);margin-top:6px">지도 위 자치구에 마우스를 올리거나 탭하면
+              해당 구의 모든 지표가 표시됩니다.</p>
+          </div>
+        </aside>
+      </div>
+      <div class="fig-note">두 유형 자치구의 노인인구비율과 사업시설관리업 종사자 수 간 상관계수는 <b>r=−0.512 (p=0.009)</b> —
+        노인이 많이 사는 곳과 노인이 일하러 가는 곳이 통계적으로 유의하게 <b>다른 자치구</b>임이 검증됩니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7. 결론 & 제언 ================= -->
+<section id="conclusion">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">07 — 종합 결론 & 정책 제언</div>
+      <h2>무임승차는 매몰 비용이 아니라<br>도시를 지탱하는 안전망이다</h2>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>① 주범 프레임 반박</h3>
+        <p class="prose" style="font-size:13.5px;margin-top:8px">노인 무임손실(2024년 3,492억 원)은 당기순손실의 40% 이상을 차지하는
+          주요 재정 압박 요인이지만, <b>완전 폐지 시뮬레이션에서도 전 기간 흑자 전환은 불가능</b>했습니다.
+          재정 건전성의 열쇠는 인건비·노후 시설 등 거대 고정비 구조조정입니다.</p>
+      </div>
+      <div class="card">
+        <h3>② 여가 편견 논파</h3>
+        <p class="prose" style="font-size:13.5px;margin-top:8px">낮 시간대엔 도심 여가 벨트로의 이동이 뚜렷하지만, 평일 새벽엔
+          외곽 베드타운(강북·노원 등)에서 도심 업무지구(강남·중구 등)로 향하는 <b>거대한 생계형 근로 이동 흐름</b>이 확인됩니다.
+          고령층은 도시의 새벽 필수 노동력을 지탱하고 있습니다.</p>
+      </div>
+      <div class="card">
+        <h3>③ 제도의 재해석</h3>
+        <p class="prose" style="font-size:13.5px;margin-top:8px">무임승차 제도는 단순한 재정적 매몰 비용이 아니라 취약계층 고령 노동자의
+          경제 활동을 보장하는 <b>실질적 '생계 유지 보조금'이자 사회적 안전망</b>입니다.
+          일차원적 축소·폐지가 아닌 균형 잡힌 대안이 필요합니다.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>해외 3개국 노인 교통 복지 정책 비교</h3>
+      <div class="tbl-scroll">
+        <table class="data flag-tbl">
+          <thead><tr><th>구분</th><th>🇬🇧 영국</th><th>🇸🇬 싱가포르</th><th>🇯🇵 일본(도쿄)</th><th>🇰🇷 한국(현행)</th></tr></thead>
+          <tbody>
+            <tr><td>제도명</td><td>ENCTS / Freedom Pass</td><td>PAssion Silver Card</td><td>Silver Pass</td><td>노인 무임승차제도</td></tr>
+            <tr><td>대상 연령</td><td>66세 이상</td><td>60세 이상</td><td>70세 이상</td><td>65세 이상</td></tr>
+            <tr><td>혜택 수준</td><td>버스 무료 (런던: +지하철)</td><td>최대 55% 할인</td><td>무료~소액 (소득 차등)</td><td>완전 무료</td></tr>
+            <tr><td>소득 기준</td><td>없음</td><td>없음</td><td>있음 (주민세 기준)</td><td>없음</td></tr>
+            <tr><td>재원 구조</td><td>정부가 운영사에 전액 보전</td><td>정부 보조금 보전</td><td>지자체 보조금</td><td><b>운영사가 직접 손실 흡수</b></td></tr>
+            <tr><td>운영사 손실</td><td>없음</td><td>없음</td><td>없음</td><td style="color:var(--danger);font-weight:700">있음</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tbl-cap">일본은 한국이 10–15년 먼저 걷게 될 경로 — 1984년 제도 도입 당시 한국의 노인 비율은 4.1%,
+        2025년 현재 20.3%(초고령사회), 2045년엔 세계 최고령국 전망(UN 추계).</p>
+    </div>
+
+    <div class="card">
+      <h3>해외 모델 적용 시뮬레이션 (2024년 기준)</h3>
+      <div class="card-sub">2024년 노인 승차 2억 3,262만 명 × 기본운임 1,400원 → 이론적 최대 수입 ≈ 3,257억 원</div>
+      <div class="tbl-scroll">
+        <table class="data">
+          <thead><tr><th>시나리오</th><th>참고 모델</th><th>적용 방식</th><th class="num">예상 회수액</th><th class="num">보전율</th></tr></thead>
+          <tbody>
+            <tr><td>A. 정부 100% 보전</td><td>영국</td><td>정부가 무임손실 전액 보전</td><td class="num">예산 3,257억 / 운영사 손실 0</td><td class="num">100%</td></tr>
+            <tr><td>B. 정부 50% 보전</td><td>영국(부분)</td><td>정부 50% + 운영사 50% 분담</td><td class="num">정부 1,629억</td><td class="num">50%</td></tr>
+            <tr><td>C. 소득상위 30% 전액</td><td>일본</td><td>기초연금 비수급자에 1,400원 부과</td><td class="num">≈ 977억 원</td><td class="num">약 30%</td></tr>
+            <tr><td>D. 소득상위 30% 반값</td><td>일본(완화)</td><td>기초연금 비수급자에 700원 부과</td><td class="num">≈ 489억 원</td><td class="num">약 15%</td></tr>
+            <tr><td>E. 전체 노인 55% 할인</td><td>싱가포르</td><td>모든 노인에게 630원 부과</td><td class="num">≈ 1,465억 원</td><td class="num">약 45%</td></tr>
+            <tr><td>F. 전체 노인 50% 할인</td><td>싱가포르 참고</td><td>모든 노인에게 700원 부과</td><td class="num">≈ 1,628억 원</td><td class="num">약 50%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tbl-cap">기초연금 수급률 약 70% 가정(2023 보건복지부) · 기본운임 기준 이론치로 실제 이동 거리에 따라 달라질 수 있음</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card rec">
+        <div class="r-no">제언 1</div>
+        <h3>재원 구조 개편 — 영국 모델</h3>
+        <p>운영사가 전액 부담하는 무임손실을 중앙정부·지자체가 단계적으로 보전.
+          무임승차는 복지 제도이므로 비용도 복지 예산으로 처리하는 것이 원칙.
+          정부 50% 보전만으로 약 1,629억 원의 부담이 경감됩니다.</p>
+      </div>
+      <div class="card rec">
+        <div class="r-no">제언 2</div>
+        <h3>소득 기준 차등 — 일본 모델</h3>
+        <p>기초연금 비수급자(상위 약 30%)에게 일부 요금을 부과해 형평성 제고.
+          저소득 노인의 무임 혜택은 유지하되, 점진적 도입(50% 할인 우선)이
+          사회적 수용성 확보에 유리합니다.</p>
+      </div>
+      <div class="card rec">
+        <div class="r-no">제언 3</div>
+        <h3>핵심 전제 — 구조 개혁이 먼저</h3>
+        <p>어떤 시나리오도 무임손실 전액을 해결하지 못합니다. 문제의 본질은 요금 부과 여부가 아닌
+          대중교통 재정 구조 전반이며, <b>재원 구조 개편 + 소득 차등의 조합</b>이
+          가장 균형 잡힌 방향입니다.</p>
+      </div>
+    </div>
+
+    <div class="finale">
+      <h3>"혜택 일괄 축소가 아니라, 데이터가 가리키는 곳에 정밀하게 —
+        공사의 재정 자립과 교통 복지의 공공성은 함께 달성되어야 한다."</h3>
+      <p>본 분석은 자치구 단위 집계 데이터를 활용한 간접(생태학적) 분석으로, 개인 수준의 인과관계로 단정할 수 없습니다.
+        향후 개인 단위 교통카드 이용 목적 데이터 또는 설문 조사를 통한 보완 검증이 필요합니다.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="src-links">
+      <a href="https://drive.google.com/drive/folders/1Ba-_rPPzTqO3zJAV6_XWIf-IUYFGFoRt" target="_blank" rel="noopener">📁 활용 데이터 폴더 (Google Drive)</a>
+      <a href="https://data.seoul.go.kr" target="_blank" rel="noopener">서울 열린데이터광장</a>
+      <a href="https://www.data.go.kr" target="_blank" rel="noopener">공공데이터포털</a>
+      <a href="https://kosis.kr" target="_blank" rel="noopener">KOSIS</a>
+    </div>
+    <div class="refs">
+      출처 및 참고 자료 — 서울 열린데이터광장 서울 지하철 승하차 인원 데이터 · 보건복지부 기초연금 수급 현황 2023 ·
+      GOV.UK Concessionary travel statistics (2023) · UK Parliament Concessionary Bus Travel Research Briefing (2024) ·
+      Transport for London Freedom Pass · LTA Singapore PAssion Silver Concession Card · Ministry of Health Singapore (2017) ·
+      Osaka Metro Keiro Pass · Japan Cabinet Office Annual Report on the Ageing Society FY2024
+    </div>
+    <div class="foot-note">26-1학기 데이터분석언어 개인 프로젝트 — 「노인 무임승차와 지하철 적자 실증 분석」 결과보고서 기반 웹사이트</div>
+  </div>
+</footer>
+
+<div id="tip" role="tooltip"></div>
+
+<script src="assets/seoul_gu.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
