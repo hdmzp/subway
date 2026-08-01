@@ -153,6 +153,37 @@
     </div>
 
     <div class="card">
+      <h3>분석 흐름 — 단계마다 다른 방법으로</h3>
+      <div class="card-sub">한 가지 기법을 반복한 것이 아니라, 각 단계의 질문에 맞는 분석 방법을 골라 순차적으로 쌓아 올렸습니다.</div>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="f-no">1</div>
+          <div class="f-title">데이터 수집 · 전처리</div>
+          <div class="f-method">이중 보정 (보정계수 추정)</div>
+          <div class="f-desc">공개 데이터 8종을 자치구·역 단위로 결합하고, 결측 구간인 2021 상반기를 상·하반기 패턴으로 역산</div>
+        </div>
+        <div class="flow-step">
+          <div class="f-no">2</div>
+          <div class="f-title">기초 현황 파악</div>
+          <div class="f-method">시계열 · 구성비 분석</div>
+          <div class="f-desc">연도·시간대·권종·인구 네 갈래로 기준선을 세워 이후 가설 검증의 출발점 마련</div>
+        </div>
+        <div class="flow-step">
+          <div class="f-no">3</div>
+          <div class="f-title">가설 1 · 적자 구조</div>
+          <div class="f-method">네트워크 OD 모델 · 시뮬레이션</div>
+          <div class="f-desc">다익스트라 최단거리 기반 요금 추정으로 손실액을 산출하고, 감소율별 적자 시나리오 검증</div>
+        </div>
+        <div class="flow-step">
+          <div class="f-no">4</div>
+          <div class="f-title">가설 2 · 통행 목적</div>
+          <div class="f-method">상관분석 · OD 분류 · 지수화</div>
+          <div class="f-desc">시간대 세분화 → 자치구 교차 검증 → 이동경로 분류 → 생계형 복합판정지수로 수렴</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
       <h3>전처리 — 2021년 상반기 보정 추정</h3>
       <div class="card-sub">노인 데이터가 2021년 7월부터 제공되므로, 4개년 완전 연도 추세를 만들기 위해 상반기를 역산했습니다.</div>
       <div class="steps s4">
@@ -161,6 +192,43 @@
         <div class="step"><h4>비중 역산</h4><p>2021 하반기 실측 비중에 보정계수를 곱해 상반기 추정 노인 비중 산출</p></div>
         <div class="step"><h4>인원 추정</h4><p>추정 비중 × 상반기 전체 승하차 실측값으로 최종 노인 승하차 추정 (이중 보정)</p></div>
       </div>
+      <div class="tbl-scroll tbl-max" style="margin-top:18px">
+        <table class="data">
+          <thead>
+            <tr>
+              <th rowspan="2" style="vertical-align:bottom">시간대</th>
+              <th colspan="3" class="sep" style="text-align:center">평일</th>
+              <th colspan="3" class="sep" style="text-align:center">주말</th>
+            </tr>
+            <tr style="position:sticky">
+              <th class="num sep">21하 노인비중</th><th class="num">보정계수</th><th class="num">21상 노인비중*</th>
+              <th class="num sep">21하 노인비중</th><th class="num">보정계수</th><th class="num">21상 노인비중*</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl"><td>06시 이전</td><td class="num sep">35.4%</td><td class="num">1.251</td><td class="num">44.3%</td><td class="num sep">38.5%</td><td class="num">1.380</td><td class="num">53.1%</td></tr>
+            <tr><td>06–07시</td><td class="num sep">22.9%</td><td class="num">0.991</td><td class="num">22.7%</td><td class="num sep">30.9%</td><td class="num">1.007</td><td class="num">31.1%</td></tr>
+            <tr><td>07–08시</td><td class="num sep">11.9%</td><td class="num">0.974</td><td class="num">11.6%</td><td class="num sep">22.2%</td><td class="num">0.981</td><td class="num">21.8%</td></tr>
+            <tr><td>08–09시</td><td class="num sep">8.9%</td><td class="num">0.972</td><td class="num">8.6%</td><td class="num sep">17.8%</td><td class="num">0.972</td><td class="num">17.3%</td></tr>
+            <tr><td>09–10시</td><td class="num sep">17.3%</td><td class="num">0.982</td><td class="num">17.0%</td><td class="num sep">20.1%</td><td class="num">0.986</td><td class="num">19.9%</td></tr>
+            <tr><td>10–11시</td><td class="num sep">27.4%</td><td class="num">0.995</td><td class="num">27.3%</td><td class="num sep">24.0%</td><td class="num">0.999</td><td class="num">24.0%</td></tr>
+            <tr><td>11–12시</td><td class="num sep">29.5%</td><td class="num">0.997</td><td class="num">29.4%</td><td class="num sep">22.3%</td><td class="num">0.990</td><td class="num">22.1%</td></tr>
+            <tr><td>12–13시</td><td class="num sep">27.1%</td><td class="num">1.001</td><td class="num">27.2%</td><td class="num sep">20.4%</td><td class="num">0.999</td><td class="num">20.3%</td></tr>
+            <tr><td>13–14시</td><td class="num sep">26.3%</td><td class="num">1.009</td><td class="num">26.6%</td><td class="num sep">19.1%</td><td class="num">1.002</td><td class="num">19.1%</td></tr>
+            <tr><td>14–15시</td><td class="num sep">27.5%</td><td class="num">1.010</td><td class="num">27.8%</td><td class="num sep">19.6%</td><td class="num">1.002</td><td class="num">19.6%</td></tr>
+            <tr><td>15–16시</td><td class="num sep">27.1%</td><td class="num">1.010</td><td class="num">27.4%</td><td class="num sep">18.9%</td><td class="num">0.997</td><td class="num">18.9%</td></tr>
+            <tr><td>16–17시</td><td class="num sep">21.7%</td><td class="num">1.011</td><td class="num">22.0%</td><td class="num sep">17.2%</td><td class="num">0.994</td><td class="num">17.1%</td></tr>
+            <tr><td>17–18시</td><td class="num sep">14.4%</td><td class="num">1.001</td><td class="num">14.4%</td><td class="num sep">14.9%</td><td class="num">0.985</td><td class="num">14.7%</td></tr>
+            <tr><td>18–19시</td><td class="num sep">8.0%</td><td class="num">0.993</td><td class="num">7.9%</td><td class="num sep">13.1%</td><td class="num">0.986</td><td class="num">12.9%</td></tr>
+            <tr><td>19–20시</td><td class="num sep">8.6%</td><td class="num">0.982</td><td class="num">8.4%</td><td class="num sep">12.3%</td><td class="num">0.975</td><td class="num">12.0%</td></tr>
+            <tr><td>20–21시</td><td class="num sep">8.7%</td><td class="num">0.973</td><td class="num">8.5%</td><td class="num sep">9.8%</td><td class="num">0.957</td><td class="num">9.3%</td></tr>
+            <tr><td>21–22시</td><td class="num sep">6.7%</td><td class="num">0.952</td><td class="num">6.4%</td><td class="num sep">7.1%</td><td class="num">0.948</td><td class="num">6.8%</td></tr>
+            <tr><td>22–23시</td><td class="num sep">4.6%</td><td class="num">0.958</td><td class="num">4.4%</td><td class="num sep">4.9%</td><td class="num">0.963</td><td class="num">4.8%</td></tr>
+            <tr><td>23시 이후</td><td class="num sep">4.0%</td><td class="num">1.016</td><td class="num">4.1%</td><td class="num sep">3.8%</td><td class="num">0.990</td><td class="num">3.8%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tbl-cap">표. 시간대별 보정계수와 2021년 상반기 노인비중 추정 결과 — * 21상 노인비중은 21하 실측 비중 × 보정계수로 역산한 추정치</p>
       <div class="callout" style="margin-top:16px">
         보정 과정에서 <strong>06시 이전 새벽 시간대의 보정계수가 평일 1.25, 주말 1.38</strong>로 유독 높게 나타났습니다.
         일반 승객이 줄어드는 상반기(동절기 포함)에도 <strong>생계형 고령 노동자의 새벽 이동은 굳건히 유지된다</strong>는 점을
@@ -327,6 +395,37 @@
       <h2>새벽의 지하철은<br>일터로 가는 노인들이 채운다</h2>
       <p class="sub">하루를 4개 구간으로 나누고, 25개 자치구의 산업·인구 지표와 교차 분석해
         생계형 통행과 여가형 통행을 분리했습니다.</p>
+    </div>
+
+    <div class="card">
+      <h3>심층 분석 4단계</h3>
+      <div class="card-sub">시간대에서 출발해 자치구·이동경로를 거쳐 종합 지수로 수렴합니다 — 단계마다 분석 방법이 다릅니다.</div>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="f-no">1</div>
+          <div class="f-title">시간대별 분석</div>
+          <div class="f-method">A~D 구간 세분화</div>
+          <div class="f-desc">새벽 vs 낮의 서로 다른 통행 루틴을 식별하고 희석 효과를 분해</div>
+        </div>
+        <div class="flow-step">
+          <div class="f-no">2</div>
+          <div class="f-title">자치구 특성 × 새벽·낮</div>
+          <div class="f-method">피어슨 상관 · t-검정</div>
+          <div class="f-desc">수급률·노인인구·종사자 수와 승하차량의 출발지–목적지 상관 검증</div>
+        </div>
+        <div class="flow-step">
+          <div class="f-no">3</div>
+          <div class="f-title">자치구 특성 × 통근</div>
+          <div class="f-method">순승차 기반 OD 유형 분류</div>
+          <div class="f-desc">오전 통근시간대 이동경로를 추적해 25개구를 출발지·목적지형으로 분류</div>
+        </div>
+        <div class="flow-step">
+          <div class="f-no">4</div>
+          <div class="f-title">복합판정지수 제안</div>
+          <div class="f-method">r값 비례 가중 합산</div>
+          <div class="f-desc">시간대 + 자치구 지표를 통계적 근거로 가중해 종합 판정지수 개발</div>
+        </div>
+      </div>
     </div>
 
     <div class="card fig" id="figHourlyLine">
