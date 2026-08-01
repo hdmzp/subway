@@ -112,7 +112,7 @@ a:hover { text-decoration: underline; }
 .tile.bad .t-value { color: var(--danger); }
 
 /* ---------- toc ---------- */
-.toc { margin-top: 44px; }
+.toc { margin-top: 36px; }
 .toc-title {
   font-size: 13px; font-weight: 800; letter-spacing: 0.08em;
   color: var(--muted); margin-bottom: 14px;
