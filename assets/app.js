@@ -476,6 +476,90 @@
   /* ==========================================================
      CHARTS — 가설 2
      ========================================================== */
+  /* 1시간 단위 시간대별 노인 승차 비중 (발표자료 차트 데이터, 2021–2024 일평균) */
+  const hlBins = ["~06", "06-07", "07-08", "08-09", "09-10", "10-11", "11-12", "12-13", "13-14", "14-15", "15-16", "16-17", "17-18", "18-19", "19-20", "20-21", "21-22", "22-23", "23~"];
+  const hlWeekday = [30.4, 15.9, 7.0, 7.4, 15.9, 27.4, 29.5, 27.1, 26.3, 27.5, 27.1, 21.7, 14.4, 8.0, 8.6, 8.7, 6.7, 4.6, 4.0];
+  const hlWeekend = [32.6, 25.9, 18.6, 17.2, 19.9, 24.0, 22.3, 20.4, 19.1, 19.6, 18.9, 17.2, 14.9, 13.1, 12.3, 9.8, 7.1, 4.9, 3.8];
+  /* [시작 인덱스, 끝 인덱스(포함), 라벨, 설명] */
+  const hlZones = [
+    [0, 0, "A구간", "~06시 · 생계형"],
+    [1, 3, "B구간", "06–09시 · 희석"],
+    [4, 11, "C구간", "09–17시 · 여가·사회"],
+    [12, 18, "D구간", "17시~ · 귀가·야간"],
+  ];
+
+  function chartHourlyLine() {
+    const col = C();
+    const W = 980, H = 400, mL = 44, mR = 16, mT = 52, mB = 36;
+    const svg = makeSvg("chHourlyLine", W, H);
+    const plotW = W - mL - mR, plotH = H - mT - mB;
+    const yMax = 36;
+    const yS = (v) => mT + plotH - (v / yMax) * plotH;
+    const xS = (i) => mL + (plotW / (hlBins.length - 1)) * i;
+    const half = plotW / (hlBins.length - 1) / 2;
+
+    /* 구간 음영 + 라벨 */
+    hlZones.forEach(([s, e, name, desc], zi) => {
+      const x0 = Math.max(mL, xS(s) - half);
+      const x1 = Math.min(W - mR, xS(e) + half);
+      if (zi % 2 === 0) {
+        el("rect", { x: x0, y: mT, width: x1 - x0, height: plotH, fill: col.ink, opacity: 0.035 }, svg);
+      }
+      const cx = (x0 + x1) / 2;
+      txt(svg, cx, 18, name, { "text-anchor": "middle", "font-size": 12, fill: col.ink2, "font-weight": 750 });
+      txt(svg, cx, 33, desc, { "text-anchor": "middle", "font-size": 10.5, fill: col.muted });
+    });
+
+    yGrid(svg, mL, W - mR, yS, [0, 10, 20, 30], "%", col);
+    el("line", { x1: mL, y1: yS(0), x2: W - mR, y2: yS(0), stroke: col.axis, "stroke-width": 1 }, svg);
+
+    /* 선 + 마커 */
+    [[hlWeekend, col.s2], [hlWeekday, col.s1]].forEach(([data, color]) => {
+      const d = data.map((v, i) => (i ? "L" : "M") + xS(i) + "," + yS(v)).join(" ");
+      el("path", { d, fill: "none", stroke: color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+      data.forEach((v, i) => {
+        el("circle", { cx: xS(i), cy: yS(v), r: 4, fill: color, stroke: col.surface, "stroke-width": 2 }, svg);
+      });
+    });
+
+    /* 선별적 직접 라벨: 새벽 피크, 낮 고원 정점, 종점 */
+    txt(svg, xS(0) + 6, yS(hlWeekday[0]) + 16, "30.4%", { "font-size": 11, fill: col.ink2, "font-weight": 700 });
+    txt(svg, xS(6), yS(hlWeekday[6]) - 12, "29.5%", { "text-anchor": "middle", "font-size": 11, fill: col.ink2 });
+    txt(svg, xS(2), yS(hlWeekday[2]) + 18, "7.0%", { "text-anchor": "middle", "font-size": 11, fill: col.ink2 });
+    txt(svg, xS(18) - 4, yS(hlWeekend[18]) - 12, "3.8%", { "text-anchor": "middle", "font-size": 11, fill: col.ink2 });
+
+    /* X축 라벨 (겹침 방지: 한 칸 걸러) */
+    hlBins.forEach((b, i) => {
+      if (i % 2 === 0 || i === hlBins.length - 1) {
+        txt(svg, xS(i), H - 12, b, { "text-anchor": "middle", "font-size": 10.5, fill: col.ink2 });
+      }
+    });
+
+    /* 크로스헤어 + 툴팁 */
+    const hair = el("line", { x1: 0, y1: mT, x2: 0, y2: mT + plotH, stroke: col.axis, "stroke-width": 1, opacity: 0 }, svg);
+    const hi1 = el("circle", { r: 6, fill: col.s1, stroke: col.surface, "stroke-width": 2, opacity: 0 }, svg);
+    const hi2 = el("circle", { r: 6, fill: col.s2, stroke: col.surface, "stroke-width": 2, opacity: 0 }, svg);
+    const overlay = el("rect", { x: mL, y: mT, width: plotW, height: plotH, fill: "transparent" }, svg);
+    overlay.addEventListener("pointermove", (e) => {
+      const rect = svg.getBoundingClientRect();
+      const px = ((e.clientX - rect.left) / rect.width) * W;
+      const i = Math.max(0, Math.min(hlBins.length - 1, Math.round((px - mL) / (plotW / (hlBins.length - 1)))));
+      const x = xS(i);
+      hair.setAttribute("x1", x); hair.setAttribute("x2", x); hair.setAttribute("opacity", 1);
+      hi1.setAttribute("cx", x); hi1.setAttribute("cy", yS(hlWeekday[i])); hi1.setAttribute("opacity", 1);
+      hi2.setAttribute("cx", x); hi2.setAttribute("cy", yS(hlWeekend[i])); hi2.setAttribute("opacity", 1);
+      const zone = hlZones.find(([s, en]) => i >= s && i <= en);
+      showTip(e, hlBins[i] + "시 · " + zone[2], [
+        ["평일 노인 비중", hlWeekday[i] + "%", col.s1],
+        ["주말 노인 비중", hlWeekend[i] + "%", col.s2],
+      ]);
+    });
+    overlay.addEventListener("pointerleave", () => {
+      hair.setAttribute("opacity", 0); hi1.setAttribute("opacity", 0); hi2.setAttribute("opacity", 0);
+      hideTip();
+    });
+  }
+
   function corrColor(r) {
     /* diverging: 양수 → blue, 음수 → red, 0 근처 → neutral gray */
     const light = !matchMedia("(prefers-color-scheme: dark)").matches;
@@ -824,6 +908,8 @@
     chartLoss();
     legend("lgLoss", [["당기순손실", col.s1], ["노인 무임 추정 손실", col.s2]]);
     chartScenario();
+    chartHourlyLine();
+    legend("lgHourlyLine", [["평일", col.s1, "line"], ["주말", col.s2, "line"]]);
     chartCorr();
     buildTopStations();
     chartIndex();
