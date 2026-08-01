@@ -58,6 +58,19 @@
         <div class="t-note">평일 기준 하루 중 최고 — 전일 평균의 2.2배</div>
       </div>
     </div>
+
+    <nav class="toc" aria-label="목차">
+      <div class="toc-title">목차</div>
+      <div class="toc-grid">
+        <a href="#overview"><span class="no">01</span>분석 개요<span class="desc">배경 · 문제 제기 · 두 가지 질문</span></a>
+        <a href="#data"><span class="no">02</span>분석 대상 데이터 &amp; 방법<span class="desc">데이터 8종 · 전처리 보정</span></a>
+        <a href="#basic"><span class="no">03</span>기초 현황<span class="desc">연도 · 시간대 · 권종 · 인구</span></a>
+        <a href="#h1"><span class="no">04</span>가설 1 · 무임승차와 적자 구조<span class="desc">손실 추정 · 시나리오 시뮬레이션</span></a>
+        <a href="#h2"><span class="no">05</span>가설 2 · 노인 통행 목적<span class="desc">시간대 · 상관분석 · 생계형 지수</span></a>
+        <a href="#map"><span class="no">06</span>자치구 지도 탐색<span class="desc">OD 유형 · 지표별 코로플레스</span></a>
+        <a href="#conclusion"><span class="no">07</span>종합 결론 &amp; 정책 제언<span class="desc">해외 비교 · 3가지 제언</span></a>
+      </div>
+    </nav>
   </div>
 </header>
 
@@ -208,10 +221,8 @@
           <div><div class="fig-title">서울시 고령 인구 · 고령 근로자 추이</div>
           <div class="fig-sub">65세 이상 인구(만 명) · 55세 이상 근로자 비중(%)</div></div>
         </div>
-        <div class="grid-2" style="gap:8px">
-          <div class="chart-box" id="chPop"></div>
-          <div class="chart-box" id="chWorker"></div>
-        </div>
+        <div class="chart-box" id="chPop"></div>
+        <div class="chart-box" id="chWorker" style="margin-top:18px"></div>
         <div class="fig-note">65세 이상 인구는 5년간 <b>+22.9%</b>, 55세 이상 근로자 비중은 15.4% → <b>20.1%</b>.
           고령 취업 증가는 생계형 이동 수요가 실질적으로 늘고 있음을 시사합니다.</div>
       </div>
@@ -224,7 +235,7 @@
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-no">04 — 가설 1 · 무임승차와 적자 구조</div>
-      <h2>무임승차를 완전히 폐지해도,<br>흑자는 오지 않는다</h2>
+      <h2>무임승차를 완전히 폐지해도,<br>여전히 적자다</h2>
       <p class="sub">699,611건의 승하차 원시 데이터와 네트워크 최단거리 연산으로 노인 무임 손실액을 독자적으로 추정하고,
         시나리오별 적자 시뮬레이션으로 통념을 검증했습니다.</p>
     </div>
@@ -438,7 +449,7 @@
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-no">07 — 종합 결론 & 정책 제언</div>
-      <h2>무임승차는 매몰 비용이 아니라<br>도시를 지탱하는 안전망이다</h2>
+      <h2>무임승차는 버려지는 돈이 아니라,<br>도시를 떠받치는 복지다</h2>
     </div>
 
     <div class="grid-3">
@@ -525,8 +536,8 @@
     </div>
 
     <div class="finale">
-      <h3>"혜택 일괄 축소가 아니라, 데이터가 가리키는 곳에 정밀하게 —
-        공사의 재정 자립과 교통 복지의 공공성은 함께 달성되어야 한다."</h3>
+      <h3>"혜택을 일괄로 줄일 것이 아니라, 데이터가 가리키는 곳부터 정밀하게 손봐야 한다.
+        공사의 재정 건전성과 교통 복지, 두 마리 토끼는 그렇게 잡을 수 있다."</h3>
       <p>본 분석은 자치구 단위 집계 데이터를 활용한 간접(생태학적) 분석으로, 개인 수준의 인과관계로 단정할 수 없습니다.
         향후 개인 단위 교통카드 이용 목적 데이터 또는 설문 조사를 통한 보완 검증이 필요합니다.</p>
     </div>

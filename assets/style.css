@@ -92,7 +92,7 @@ a:hover { text-decoration: underline; }
 }
 .hero h1 em { font-style: normal; color: var(--accent); }
 .hero .lede {
-  margin-top: 20px; font-size: 16.5px; color: var(--ink-2); max-width: 44em;
+  margin-top: 20px; font-size: 16.5px; color: var(--ink-2); max-width: 56em;
 }
 .hero-meta { margin-top: 16px; font-size: 13px; color: var(--muted); }
 
@@ -111,9 +111,39 @@ a:hover { text-decoration: underline; }
 .tile .t-note { font-size: 12px; color: var(--muted); margin-top: 4px; }
 .tile.bad .t-value { color: var(--danger); }
 
+/* ---------- toc ---------- */
+.toc { margin-top: 44px; }
+.toc-title {
+  font-size: 13px; font-weight: 800; letter-spacing: 0.08em;
+  color: var(--muted); margin-bottom: 14px;
+}
+.toc-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+}
+@media (max-width: 720px) { .toc-grid { grid-template-columns: 1fr; } }
+.toc-grid a {
+  display: flex; align-items: baseline; gap: 14px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 13px 18px; color: var(--ink); font-size: 14.5px; font-weight: 650;
+  transition: border-color .12s;
+}
+.toc-grid a:hover {
+  text-decoration: none;
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.toc-grid a .no {
+  font-size: 12.5px; font-weight: 800; color: var(--accent);
+  font-variant-numeric: tabular-nums; flex: none;
+}
+.toc-grid a .desc {
+  margin-left: auto; font-size: 12.5px; font-weight: 400; color: var(--muted);
+  text-align: right;
+}
+@media (max-width: 560px) { .toc-grid a .desc { display: none; } }
+
 /* ---------- sections ---------- */
 section { padding: 56px 0 8px; }
-.sec-head { margin-bottom: 28px; max-width: 46em; }
+.sec-head { margin-bottom: 28px; }
 .sec-no {
   font-size: 12.5px; font-weight: 800; color: var(--accent);
   letter-spacing: 0.1em; margin-bottom: 8px;
@@ -121,7 +151,7 @@ section { padding: 56px 0 8px; }
 .sec-head h2 { font-size: clamp(23px, 3.2vw, 30px); letter-spacing: -0.015em; line-height: 1.3; font-weight: 800; }
 .sec-head .sub { margin-top: 10px; color: var(--ink-2); font-size: 15px; }
 
-.prose { max-width: 46em; color: var(--ink-2); font-size: 15px; }
+.prose { color: var(--ink-2); font-size: 15px; }
 .prose + .prose { margin-top: 12px; }
 .prose strong, .prose b { color: var(--ink); }
 
@@ -149,7 +179,7 @@ section { padding: 56px 0 8px; }
 .callout {
   border: 1px solid var(--border); border-left: 3px solid var(--accent);
   background: var(--surface); border-radius: 12px; padding: 16px 20px;
-  margin-top: 20px; font-size: 14.5px; color: var(--ink-2); max-width: 52em;
+  margin-top: 20px; font-size: 14.5px; color: var(--ink-2);
 }
 .callout strong { color: var(--ink); }
 .callout.warn { border-left-color: var(--danger); }
@@ -304,8 +334,8 @@ svg text { font-family: inherit; }
   background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, var(--surface)), var(--surface));
   border: 1px solid var(--border);
 }
-.finale h3 { font-size: 21px; font-weight: 800; letter-spacing: -0.01em; max-width: 30em; line-height: 1.45; }
-.finale p { margin-top: 12px; color: var(--ink-2); font-size: 14.5px; max-width: 50em; }
+.finale h3 { font-size: 21px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.45; }
+.finale p { margin-top: 12px; color: var(--ink-2); font-size: 14.5px; }
 
 /* footer */
 footer { margin-top: 72px; border-top: 1px solid var(--border); padding: 36px 0 56px; }

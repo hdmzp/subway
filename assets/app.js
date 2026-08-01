@@ -355,9 +355,8 @@
       p.style.cursor = "pointer";
       p.addEventListener("pointermove", (e) => showTip(e, yr + "년", [["65세 이상 인구", fmt(elderPop[i], 0) + "만 명", col.s1]]));
       p.addEventListener("pointerleave", hideTip);
-      if (i === 0 || i === popYears.length - 1)
-        txt(svg, x + barW / 2, yS(elderPop[i]) - 6, elderPop[i], { "text-anchor": "middle", "font-size": 10.5, fill: col.ink2 });
-      txt(svg, x + barW / 2, H - 11, String(yr).slice(2), { "text-anchor": "middle", "font-size": 11, fill: col.ink2 });
+      txt(svg, x + barW / 2, yS(elderPop[i]) - 6, elderPop[i], { "text-anchor": "middle", "font-size": 10.5, fill: col.ink2 });
+      txt(svg, x + barW / 2, H - 11, yr, { "text-anchor": "middle", "font-size": 11, fill: col.ink2 });
     });
     txt(svg, mL, 13, "65세 이상 인구 (만 명)", { "font-size": 11, fill: col.muted });
   }
@@ -377,7 +376,7 @@
       el("circle", { cx: xS(i), cy: yS(v), r: 4, fill: col.s2, stroke: col.surface, "stroke-width": 2 }, svg);
       if (i === 0 || i === popYears.length - 1)
         txt(svg, xS(i), yS(v) - 10, v + "%", { "text-anchor": "middle", "font-size": 10.5, fill: col.ink2 });
-      txt(svg, xS(i), H - 11, String(popYears[i]).slice(2), { "text-anchor": "middle", "font-size": 11, fill: col.ink2 });
+      txt(svg, xS(i), H - 11, popYears[i], { "text-anchor": "middle", "font-size": 11, fill: col.ink2 });
       const hit = el("circle", { cx: xS(i), cy: yS(v), r: 15, fill: "transparent" }, svg);
       hit.addEventListener("pointermove", (e) => showTip(e, popYears[i] + "년", [["55세 이상 근로자 비중", v + "%", col.s2]]));
       hit.addEventListener("pointerleave", hideTip);
